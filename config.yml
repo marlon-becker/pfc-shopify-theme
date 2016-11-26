@@ -1,0 +1,9 @@
+development:
+  api_key: 03c6f44613e6c298d9f2a546af7f4704
+  password: eb17d93de1a709aeaa92953d67725d47
+  store: playing-for-change.myshopify.com
+  theme_id: 79568197
+  whitelist_files:
+  ignore_files:
+
+

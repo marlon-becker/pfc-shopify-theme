@@ -1,0 +1,87 @@
+{{ 'jquery.bxslider.css' | asset_url | stylesheet_tag }}
+{{ 'jquery.bxslider.min.js' | asset_url | script_tag }}
+
+{% assign subtitle = "This is what change looks like​..." %}
+{% assign description = "Enjoy our Black Friday SALE with discounts up to 50% . Check out our <strong>Gift Card deals</strong>, and <strong>Cool New Products</strong>. Here's your chance to not only get some cool PFC swag but to also help expand our message of creating positive change through music by <strong>shopping where it makes a difference!</strong>" %}
+<div class="landingpage">
+  <div class="container-bootstrap container cf">
+    <div class="page-header cf">
+      <h1 class="majortitle landingtitle">
+      <img src="{{ 'logo_pfc.png' | asset_url }}" class="landingtitle-logo"/>
+      {{ page.title }}
+      </h1>   
+    </div>
+  </div>    
+
+  <div class="container-bootstrap container cf">
+      
+      <div class="row">
+        <div class="col-md-8 col-xs-12 box box--grey">
+          {{ page.content }}
+        </div>
+        <div class="col-md-4 col-xs-12">
+            <div class="box box--yellow">
+              <h2 class="landingsubtitle">{{subtitle}}</h2>
+            </div>
+            <p class="box">{{description}}</p>
+            <div class="landingtag visible-lg visible-md">            
+            <img src="{{ 'tag-black-FR.png' | asset_url }}" width="85%" height="85%">
+            </div>
+        </div>     
+      </div>
+      <hr class="content-spacer">
+      <div class="row">
+          
+        <div class="col-md-8 col-xs-12 pull-right">         
+             
+            {% assign product_related_title = 'Discover our Newest Products' %}
+            {% assign product_related_subtitle = '<b><a href="/products/draft-roadside-flowers-rings-16-20mm">Roadside flower&#39;s Handcrafts</a>:<b> there has always been a deep connection between flowers and the spiritual realm. The flowers are dried with love and each delightful creation is unique.
+  <b><a href="/products/eco-friendly-usb-drives-16-gb-preloaded-with-pfc-music-videos">Eco Friendly USB drive 16GB</a></b>: Preloaded with some of the best Playing For Change videos and songs.
+  <b><a href="/products/joy-business-t-shirt">Joy Business t-shirt</a></b>: Bring a smile to those around you by joining us in "the joy business" with this newly designed t-shirt.' %}
+            {% assign product_related_title_tag = 'h3' %}
+            {% assign product_related_title_tag_class = 'landingsubtitle' %}
+            {% assign related_product_screen_big = 4 %}
+            {% assign related_product_show_title = 'no' %}
+            {% assign related_product_show_description = 'yes' %}
+            {% assign product_related_max_number_of_product = 3 %}
+            {% assign product_related_collection = 'newest-products' %}      
+            
+            {% include 'related-products' %}
+        </div> 
+
+        <div class="col-md-4 col-xs-12 pull-right">
+            <h3 class="landingsubtitle">Gift Cards deals</h3>
+            <p>Share the love this holiday season by connecting the world through music. Here's your change to introduce a loved one to our store as well as receive a gift for yourself! (6 Gift Cards available)</p>
+            
+            <ul class="gift-slider list--default cf" style="max-height:250px">
+              <li><a href="/collections/gift-cards/products/pfc-gift-card-10-3-videos-dd">{{ 'gift_card_01.jpg' | asset_url | img_tag }}</a></li>
+              <li><a href="/collections/gift-cards/products/pfc-gift-card-75-15-card-7-videos-dd">{{ 'gift_card_02.jpg' | asset_url | img_tag }}</a></li>
+              <li><a href="/collections/gift-cards/products/pfc-gift-card-50-10-card-5-videos-dd">{{ 'gift_card_03.jpg' | asset_url | img_tag }}</a></li>
+              <li><a href="/collections/gift-cards/products/pfc-gift-card-25-5-card-3-videos-dd">{{ 'gift_card_04.jpg' | asset_url | img_tag }}</a></li>
+            </ul>
+            <div class="more"><a class="btn btn-medium pfc-yellow btn-responsive btn-responsive" href="/collections/gift-cards" title="{{ product.title | escape }}">More gifts</a></div>
+            <hr class="content-spacer">
+        </div>
+
+      </div>
+
+  </div>
+  <hr class="content-spacer">
+
+  <div>
+  <ul class="bottom-slider list--default cf" style="max-height:450px">
+      <li><a href="/collections/apparel">{{ 'slide_1.jpg' | asset_url | img_tag }}</a></li>
+      <li><a href="/collections/fleurs-de-bords-de-routes">{{ 'slide_2.jpg' | asset_url | img_tag }}</a></li>
+      <li><a href="/collections/gift-cards">{{ 'slide_3.jpg' | asset_url | img_tag }}</a></li>    
+    </ul>
+  </div>
+
+  
+  <script>
+  $(document).ready(
+    function(){
+      $('.gift-slider, .bottom-slider, .related-products-slider').
+      bxSlider({auto:true});    
+    });
+  </script>
+</div>

@@ -1,0 +1,91 @@
+ 
+
+  {% comment %}
+  ----------- DEFAULT AND INIT VALUES -----------
+  {% endcomment %}
+
+  {% assign relatedProductsHandlers = "" %}
+
+  {% assign related_product_all_tag = 'all' | split:' ' %}
+  {% assign product_related_title = product_related_title | default: 'YOU MAY ALSO LIKE' %}
+  {% assign product_related_subtitle = product_related_subtitle | default: '' %}
+  {% assign product_related_max_number_of_product = product_related_max_number_of_product | default: 4 %}
+  {% assign product_related_collection = product_related_collection | default: 'all' %} 
+  {% assign product_related_size = product_related_size | default: 'medium' %}  
+  {% assign product_related_title_tag = product_related_title_tag | default: 'div' %}  
+  {% assign product_related_search_tags = product_related_search_tags | default: related_product_all_tag %}
+  {% assign product_related_search_exclude_cart = product_related_search_exclude_cart | default: 'no' %} 
+
+  {% assign counter = 0 %}
+
+  {% comment %}
+  ----------- END DEFAULT AND INIT VALUES -----------
+  {% endcomment %}  
+
+          {% for product in collections.[product_related_collection].products %} 
+            {% assign productHandle = product.id %}
+
+            {% if product.available %}
+                
+                {%assign duplicated = false %} 
+                {%assign matchtag = false %}
+
+                {% if product_related_search_exclude_cart == 'yes' and cart.items|size > 0 %}
+                  {% for item in cart.items %}                              
+                      {% if product.handle == item.product.handle %}
+                      {% assign duplicated = true %}
+                    {% endif %}
+                  {% endfor %}    
+                {% endif %}
+
+                {% for tag in product.tags %}                   
+                    {%assign productAdded = false %}                      
+                    {% for relatedTag in product_related_search_tags %}
+                      {% if relatedTag == tag or relatedTag == 'all' %}                        
+                        {% assign productAdded = true %}
+                        {% assign isHandleSetted = false %}                           
+
+                        {% assign relatedProductsHandlersSplit = relatedProductsHandlers | split: ',' %}
+                        {% for settedHandle in relatedProductsHandlersSplit %}
+                          {% if settedHandle == productHandle %}
+                            {% assign isHandleSetted = true %} 
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}  
+                    {% endfor %}                   
+                 {% endfor %}
+
+                {% if duplicated == false and isHandleSetted == false and productAdded == true%}
+                         
+                  {% assign relatedProductsHandlers = relatedProductsHandlers | append:productHandle | append: ',' %}
+
+                  {% assign counter = counter | plus: 1 %}
+
+                  {%if counter == 1 %}
+                  <div class="container-bootstrap cf">
+                    <{{product_related_title_tag}} {% if product_related_title_tag_class %}class="{{product_related_title_tag_class}}" {% endif %} id="title">{{ product_related_title }}</{{product_related_title_tag}}>      
+
+                    {% if product_related_subtitle != "" %} 
+                    <p>{{product_related_subtitle}}</p>                   
+                    {% endif %}                    
+                    <ul class="related-products related-products--{{product_related_size|lowercase}}">
+                    
+                  {% endif %} 
+
+                  {% include 'product-related-block' %}
+                                    
+
+                {% endif %}   
+
+              {% if counter == product_related_max_number_of_product | minus: 1 %}
+                {% break %}
+              {% endif %}
+
+            {% endif %}        
+          {% endfor %}
+   
+                          {%if counter > 0 %}                               
+                              </ul>
+                            </div>
+                          {% endif %}
+

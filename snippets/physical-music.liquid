@@ -1,0 +1,70 @@
+{% include 'sca_freegift_price' with product-detail %}
+<table>
+    {% for variant in product.variants %}
+{% unless variant.metafields.secomapp.freegifts %}
+{% unless variant.title contains '(Freegifts)' %}
+
+		{% if product.variants > 1 %}
+			<tr>
+				<td>{{ variant.option1 }}</td>
+				<td>{{ variant.price | money }}</td>
+				<td>
+					<div class="product-form section">
+					  {% if sca_product_available %}
+					  <form class="form" action="/cart/add" method="post" enctype="multipart/form-data" data-product-id="{{ product-detail.id }}">
+					    <div class="input-row">
+					      <label for="quantity">{{ 'products.product.quantity' | t }}</label>
+					      <input id="quantity" class="select-on-focus" name="quantity" value="1" size="2" />
+					    </div>
+					    <div class="input-row">
+					      {% if sca_product_variantCount > 1 %}
+					      {% if product-detail.options.size == 1 and settings.prod_show_single_opt %}
+					      <div class="inline-option">
+					        <label for="product-select">{{ product-detail.options.first }}</label>
+					        {% endif %}
+					        
+					        <select id="product-select-{{ product-detail.id }}" name="id">
+					          {% for variant in product-detail.variants %}
+					          {% unless variant.metafields.secomapp.freegifts %}
+							  {% unless variant.title contains '(Freegifts)' %}
+					          <option value="{{ variant.id }}" {% if variant == product-detail.selected_or_first_available_variant %} selected="selected"{% endif %}>{{ variant.title | escape }}</option>
+					          {%endunless%}
+							  {%endunless%}
+					          {% endfor %}
+					        </select>
+					        
+					        {% if product-detail.options.size == 1 and settings.prod_show_single_opt %}
+					      </div>
+					      {% endif %}
+					      {% else %}
+					      <input type="hidden" name="id" value="{{ product-detail.selected_or_first_available_variant.id }}" />
+					      {% unless sca_product_variantCount != 1 or product-detail.variants.first.title contains 'Default' %}
+					      {% if settings.prod_show_single_var_name %}
+					      <label class="singleopt">
+					        {% for option in product-detail.options %}
+					        {% assign opt_idx = 'option' | append: forloop.index %}
+					        {{ option }}: {{ product-detail.variants.first[opt_idx] }}<br/>
+					        {% endfor %}
+					      </label>
+					      {% endif %}
+					      {% endunless %}
+					      {% endif %}
+					    </div>
+					    <div class="input-row">
+					      <input type="submit" class="pfc-yellow black-text bold shadow" value="{{ 'products.product.add_to_cart' | t }}" />
+					    </div>
+					  </form>
+<div class="sca-fg-cat-list" style="display: none;" name="secomapp-fg-data-{{ product.id }}"> </div>
+
+					  {% else %}
+					  <p><em>{{ 'products.product.product_unavailable' | t }}</em></p>
+					  {% endif %}
+					</div>
+				</td>
+			</tr>
+		{% endif %}
+
+{%endunless%}
+{%endunless%}
+	{% endfor %}
+</table>

@@ -1,0 +1,100 @@
+{% assign shappify_qb_options = '' %}
+{% assign shappify_qb_options_count = '0' %}
+{% for variant in product.variants %}
+{% unless variant.metafields.secomapp.freegifts %}
+{% unless variant.title contains '(Freegifts)' %}
+
+    {% if variant.metafields.shappify_qb.qb_hide == "1" %}{% else %}
+        {% capture shappify_qb_options %}{{shappify_qb_options}} 
+        <option value="{{ variant.id }}">{{ variant.title | escape }} - {{ variant.price | money }}</option>
+        {% endcapture %}
+        {% assign shappify_qb_options_count = shappify_qb_options_count|plus:1 %}
+        <div style='display:none' id='variant_html_{{variant.id}}'>{{variant.metafields.shappify_qb.pricing_html}}</div>
+    {% endif %}
+
+{%endunless%}
+{%endunless%}
+{% endfor %}
+
+
+<div style="display:none">
+    <select id="product-select" class="hidden">
+    </select>
+</div>
+
+
+<div class="shappify-variants-wrapper clearfix" {% if shappify_qb_options_count == 1 %}style="display:none"{% endif %}> 
+<select id="shappify-variant-id" name='id'>
+{{shappify_qb_options}}
+</select>
+</div>
+
+{% if shappify_qb_options_count > 1 %}
+<script>
+ var domLoaded = function (callback) {
+    /* Internet Explorer */
+    /*@cc_on
+    @if (@_win32 || @_win64)
+    document.write('<script id="ieScriptLoad" defer src="//:"><\/script>');
+        document.getElementById('ieScriptLoad').onreadystatechange = function() {
+            if (this.readyState == 'complete') {
+                callback();
+            }
+        };
+        @end @*/
+            /* Mozilla, Chrome, Opera */
+        if (document.addEventListener) {
+            document.addEventListener('DOMContentLoaded', callback, false);
+        }
+        /* Safari, iCab, Konqueror */
+        else if (/KHTML|WebKit|iCab/i.test(navigator.userAgent)) {
+            var DOMLoadTimer = setInterval(function () {
+                if (/loaded|complete/i.test(document.readyState)) {
+                    callback();
+                    clearInterval(DOMLoadTimer);
+                }
+            }, 10);
+        }else{
+            /* Other web browsers */
+            window.onload = callback;
+        }
+    };
+
+
+domLoaded(function() {
+  
+  setTimeout(fix_variants, 1000);
+  function fix_variants(){
+{% for variant in product.variants %}
+{% unless variant.metafields.secomapp.freegifts %}
+{% unless variant.title contains '(Freegifts)' %}
+
+    {% if variant.metafields.shappify_qb.qb_hide == "1" %}
+      {% if variant.metafields.shappify_qb.option1 != "" %}
+          jQuery('.single-option-selector option').filter(function() {
+            return jQuery(this).text() == {{ variant.option1 | json }}
+          }).remove();
+      {% endif %}
+      {% if variant.metafields.shappify_qb.option2 != "" %}
+          jQuery('.single-option-selector option').filter(function() {
+            return jQuery(this).text() == {{ variant.option2 | json }}
+          }).remove();
+      {% endif %}
+      {% if variant.metafields.shappify_qb.option3 != "" %}
+          jQuery('.single-option-selector option').filter(function() {
+            return jQuery(this).text() == {{ variant.option3 | json }}
+          }).remove();
+      {% endif %}
+      {% endif %}
+
+{%endunless%}
+{%endunless%}
+    {% endfor %}
+  }
+var freegifts_product_json=function(a){if(a){String.prototype.endsWith||Object.defineProperty(String.prototype,"endsWith",{value:function(a,b){var c=this.toString();(void 0===b||b>c.length)&&(b=c.length),b-=a.length;var d=c.indexOf(a,b);return-1!==d&&d===b}});for(var b=function(a){for(var b in a)if(a.hasOwnProperty(b))return!1;return!0},c=a.price,d=a.price_max,e=a.price_min,f=a.compare_at_price,g=a.compare_at_price_max,h=a.compare_at_price_min,i=0;i<a.variants.length;i++){var j=a.variants[i],k=null!==j.option3?j.option3:null!==j.option2?j.option2:j.option1;"undefined"!=typeof SECOMAPP&&"undefined"!=typeof SECOMAPP.gifts_list_avai&&!b(SECOMAPP.gifts_list_avai)&&"undefined"!=typeof SECOMAPP.gifts_list_avai[j.id]||k.endsWith("(Freegifts)")||k.endsWith("% off)")?(a.variants.splice(i,1),i-=1):(d>=j.price&&(d=j.price,c=j.price),e<=j.price&&(e=j.price),j.compare_at_price&&(g>=j.compare_at_price&&(g=j.compare_at_price,f=j.compare_at_price),h<=j.compare_at_price&&(h=j.compare_at_price)),1==j.available&&(a.available=!0))}a.price=c,a.price_max=e,a.price_min=d,a.compare_at_price=f,a.compare_at_price_max=h,a.compare_at_price_min=g,a.price_varies=e>d?!0:!1,a.compare_at_price_varies=h>g?!0:!1}return a};
+var sca_product_info = freegifts_product_json ( {{ product | json }} );
+  new Shopify.OptionSelectors("shappify-variant-id", { product: sca_product_info, onVariantSelected: selectCallback });
+    jQuery('.single-option-selector').trigger('change');
+});
+</script>
+{% endif %}

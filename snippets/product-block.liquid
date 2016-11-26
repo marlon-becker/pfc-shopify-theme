@@ -1,0 +1,59 @@
+{% include 'sca_freegift_price' with product-block %}
+{% comment %}
+Example of use:
+
+{% assign product_collection = collection %}
+{% include 'product-block' with product %}
+
+ALSO: Feel free to change the 'large' just below here to 'grande' if you require giant product images
+{% endcomment %}
+
+{% assign product_block_image_size = 'large' %}
+
+{% if product_collection %}
+    {% capture product_url %}{{ product-block.url | within: product_collection }}{% endcapture %}
+{% else %}
+    {% capture product_url %}{{ product-block.url }}{% endcapture %}
+{% endif %}
+
+<div data-product-id="{{ product.id }}" class="product-block">
+    <div class="block-inner">
+        <div class="image-cont shadow">
+            <a class="image-link more-info" href="{{ product_url }}">
+                {{ product-block.featured_image | product_img_url: product_block_image_size | img_tag: product-block.featured_image.alt }}
+                <div name="secomapp-fg-image-{{ product-block.id }}" style="display: none;"> {{ "icon-freegift.png" | asset_url | img_tag: "Free Gift", "sca-fg-img-collect" }} </div>
+                <div class="sca-fg-cat-list" style="display:none;" name="secomapp-fg-data-{{ product-block.id }}" prod-show='list'> </div>
+                {% include 'product-label' with product-block %}
+            </a>
+            
+            <a class="hover-info more-info" href="{{ product_url }}">
+                <div class="inner">
+                  <div class="innerer">
+                    <div class="title">{{ product-block.title }}</div>
+                    {% if settings.prod_hov_type contains 'full' %}<div>-</div>{% endif %}
+                    
+                    {% if sca_compare_at_price_max > sca_price %}
+                        <div class="reducedfrom"><span class="amount">{{ sca_compare_at_price_max | money }}</span></div>
+                    {% endif %}
+                    <span class="price">
+                        {% if sca_price_varies %}
+                            <span class="from">{{ 'products.listing.from' | t }}</span>
+                        {% endif %}
+                        {{ sca_price | money }}
+                    </span>
+                  </div>
+                </div>
+                {% unless settings.prod_hov_type == 'bottom-permanent' %}
+                    <div class="bg"></div>
+                {% endunless %}
+            </a>
+        </div>
+    </div>
+  
+  {% if settings.prod_thumb_detail_show or settings.coll_gridstream_mode contains 'both' or settings.coll_gridstream_mode contains 'stream' %}
+    {% assign product_detail_in_block = true %}
+    <div class="product-detail">
+        <div class="container inner cf">{% include 'product-detail' with product-block %}</div>
+    </div>
+  {% endif %}
+</div>

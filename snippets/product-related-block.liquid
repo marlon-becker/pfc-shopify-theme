@@ -1,0 +1,60 @@
+{% include 'sca_freegift_price' with product %}
+{% assign related_product_image_size = related_product_image_size | default:'480x480' %}
+{% assign related_product_screen_big = related_product_screen_big | default:'3' %}
+{% assign related_product_screen_medium = related_product_screen_medium | default:'6' %}
+{% assign related_product_screen_small = related_product_screen_small | default:'12' %}
+{% assign related_product_show_description = related_product_show_description | default:'yes' %}
+{% if product_related_size == 'medium' %}
+  {% assign related_product_description_truncate = 12 %}
+{% else %}
+  {% assign related_product_description_truncate = 16 %}
+{% endif %}
+
+{% if product_collection %}
+    {% capture product_url %}{{ product.url | within: product_collection }}{% endcapture %}
+{% else %}
+    {% capture product_url %}{{ product.url }}{% endcapture %}
+{% endif %}
+
+<li class=" product-related-block col-md-{{related_product_screen_big}} col-sm-{{related_product_screen_medium}} col-xs-{{related_product_screen_small}} {{ product.handle }}">
+  <div class="related-product-inner">
+        
+        <div class="product-block">
+          <div class="image block-inner">            
+            <a href="{{ product.url | within: collection }}" title="{{ product.title | escape }}">
+            <img src="{{ product.featured_image | product_img_url: related_product_image_size}}" class="shadow">
+             {% include 'product-label' with product %}</a>
+            
+            <a class="hover-info more-info" href="{{ product_url }}">
+                  <div class="inner">
+                    <div class="innerer">
+                      <div class="title">{{ product.title }}</div>
+                      {% if settings.prod_hov_type contains 'full' %}<div>-</div>{% endif %}
+                      
+                      {% if sca_compare_at_price_max > sca_price %}
+                          <div class="reducedfrom"><span class="amount">{{ sca_compare_at_price_max | money }}</span></div>
+                      {% endif %}
+                      <span class="price">
+                          {% if sca_price_varies %}
+                              <span class="from">{{ 'products.listing.from' | t }}</span>
+                          {% endif %}
+                          {{ sca_price | money }}
+                      </span>
+                    </div>
+                  </div>
+                  {% unless settings.prod_hov_type == 'bottom-permanent' %}
+                    <div class="bg"></div>
+                  {% endunless %}
+              </a>
+          </div>
+        </div>
+      {% if related_product_show_description == 'yes' %}
+      <div class="copy copy--description">
+          {{ product.description | strip_newlines | stip_html | truncatewords: related_product_description_truncate }}         
+      </div>
+      {% endif %}
+      
+      <div class="more"><a class="btn btn-medium pfc-yellow" href="{{ product.url }}" title="{{ product.title | escape }}">View</a></div>
+      <div class="clear"></div>
+  </div>
+</li>
